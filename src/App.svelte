@@ -4,7 +4,7 @@
 
 <main>
   <div class="grid-container">
-    <Grid width="12" height="16" itemSize="32" />
+    <Grid width="12" height="16" itemSize="64" />
   </div>
 </main>
 
