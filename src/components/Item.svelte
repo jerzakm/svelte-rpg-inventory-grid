@@ -1,4 +1,11 @@
 <script lang="ts">
+  import { get } from "svelte/store";
+  import { dragStatus } from "../dragStatus";
+
+  export let itemSize = [6, 6];
+  export let squareSize = 64;
+  export let itemImage = "fenrir.jpg";
+
   let dragStart = {
     x: 0,
     y: 0,
@@ -10,27 +17,51 @@
   };
 
   let dragging = false;
+  let coverStyle = "fill:rgba(0,0,255,0.0);";
+  let imageTransform = "";
 
   function handleDragStart(e) {
-    console.log(e);
+    console.log("drag start");
     dragging = true;
     dragStart.x = e.pageX;
     dragStart.y = e.pageY;
-    console.log(dragStart.x, e.pageX);
   }
 
   function handleDragEnd(e) {
-    console.log(e);
     dragging = false;
+    coverStyle = "fill:rgba(0,0,255,0.0);";
+    imageTransform = "transform: translate3d(0px,0px,0px);";
+    dragStatus.reset();
+    console.log("drag end");
   }
 
   function handleDrag(e) {
     mouseMove.x = e.pageX;
     mouseMove.y = e.pageY;
-  }
+    if (dragging) {
+      coverStyle = "fill:rgba(255,255,0,0.05);";
+      imageTransform = `transform: translate3d(${
+        mouseMove.x - dragStart.x
+      }px, ${mouseMove.y - dragStart.y}px, 0);`;
 
-  export let itemSize = [10, 10];
-  export let squareSize = 64;
+      const currentDragStatus = get(dragStatus.store);
+
+      // cover image becomes red to indicate that there is no space in the grid
+      if (!currentDragStatus.fits && currentDragStatus.onGrid) {
+        coverStyle = "fill:rgba(255,0,0,0.15);";
+      }
+
+      dragStatus.store.set({
+        itemX: mouseMove.x,
+        itemY: mouseMove.y,
+        dragging: true,
+        itemImage: itemImage,
+        itemSize,
+        fits: currentDragStatus.fits,
+        onGrid: currentDragStatus.onGrid,
+      });
+    }
+  }
 </script>
 
 <div
@@ -38,26 +69,19 @@
   on:mouseup={handleDragEnd}
   on:mousemove={handleDrag}
   draggable="false"
-  style={dragging
-    ? `transform: translate3d(${mouseMove.x - dragStart.x}px, ${
-        mouseMove.y - dragStart.y
-      }px, 0);`
-    : ""}
+  style={imageTransform}
 >
-  <!-- <img src="fenrir.jpg" alt="Item" draggable="false" /> -->
   <svg
     width={`${itemSize[0] * squareSize}`}
     height={`${itemSize[1] * squareSize}`}
   >
-    <image xlink:href="fenrir.jpg" width="100%" height="100%" x="0" y="0" />
-    <rect width="100%" height="100%" style="fill:rgba(0,0,255,0.0);" />
+    <image xlink:href={itemImage} width="100%" height="100%" x="0" y="0" />
+    <rect width="100%" height="100%" style={coverStyle} />
   </svg>
-  <cover />
 </div>
 
 <style>
   svg {
     user-select: none;
-    position: absolute;
   }
 </style>
