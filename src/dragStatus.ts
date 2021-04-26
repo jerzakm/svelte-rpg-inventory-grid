@@ -7,7 +7,7 @@ const defaultDragData = {
   itemImage: "",
   itemSize: [0, 0],
   fits: false,
-  onGrid: false,
+  onGrid: true,
 };
 
 const dragStore = writable<IDragStatus>(defaultDragData);

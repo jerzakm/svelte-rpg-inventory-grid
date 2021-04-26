@@ -46,10 +46,16 @@
 
       const currentDragStatus = get(dragStatus.store);
 
-      // cover image becomes red to indicate that there is no space in the grid
+      // RED cover- DOESNT FIT THE GRID
       if (!currentDragStatus.fits && currentDragStatus.onGrid) {
         coverStyle = "fill:rgba(255,0,0,0.15);";
       }
+      // GREEN cover - FITS THE GRID
+      else if (currentDragStatus.fits && currentDragStatus.onGrid) {
+        coverStyle = "fill:rgba(0,255,0,0.15);";
+      }
+
+      console.log(currentDragStatus.fits, currentDragStatus.onGrid);
 
       dragStatus.store.set({
         itemX: mouseMove.x,
