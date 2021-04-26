@@ -10,18 +10,13 @@
   };
 
   let dragging = false;
+
   function handleDragStart(e) {
     console.log(e);
     dragging = true;
     dragStart.x = e.pageX;
     dragStart.y = e.pageY;
-    // window.addEventListener("mouseup", (e) => {
-    //   handleDragEnd(e);
-    // });
-    // window.addEventListener("mousemove", (e) => {
-    //   const n = Math.random() * 100;
-    //   handleDrag(e, n);
-    // });
+    console.log(dragStart.x, e.pageX);
   }
 
   function handleDragEnd(e) {
@@ -33,6 +28,9 @@
     mouseMove.x = e.pageX;
     mouseMove.y = e.pageY;
   }
+
+  export let itemSize = [10, 10];
+  export let squareSize = 64;
 </script>
 
 <div
@@ -46,11 +44,20 @@
       }px, 0);`
     : ""}
 >
-  <img src="fenrir.jpg" alt="Item" draggable="false" />
+  <!-- <img src="fenrir.jpg" alt="Item" draggable="false" /> -->
+  <svg
+    width={`${itemSize[0] * squareSize}`}
+    height={`${itemSize[1] * squareSize}`}
+  >
+    <image xlink:href="fenrir.jpg" width="100%" height="100%" x="0" y="0" />
+    <rect width="100%" height="100%" style="fill:rgba(0,0,255,0.0);" />
+  </svg>
+  <cover />
 </div>
 
 <style>
-  img {
+  svg {
     user-select: none;
+    position: absolute;
   }
 </style>

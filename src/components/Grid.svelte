@@ -1,9 +1,14 @@
 <script lang="ts">
+  import { make2dArray } from "../util";
+
   import Item from "./Item.svelte";
 
   export let width;
   export let height;
   export let itemSize;
+
+  let gridFillStatus: boolean[][] = make2dArray(width, height, false);
+  console.log(gridFillStatus);
 </script>
 
 <grid style={`grid-template-columns: repeat(${width}, ${itemSize}px);`}>
@@ -13,8 +18,6 @@
     {/each}
   {/each}
 </grid>
-
-<Item />
 
 <style>
   grid {
