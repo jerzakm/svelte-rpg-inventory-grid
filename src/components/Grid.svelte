@@ -1,73 +1,59 @@
 <script lang="ts">
-  import { make2dArray } from "../util";
-  import { dragStatus } from "../dragStatus";
-  import { onMount } from "svelte";
-
-  import Item from "./Item.svelte";
-
-  export let width;
-  export let height;
-  export let itemSize;
-
-  let gridDomElement: HTMLElement;
-  let gridFillStatus: boolean[][] = make2dArray(width, height, false);
-
-  function checkItemFit(itemSize: number[], position: number[]): boolean {
-    let fits = true;
-
-    if (
-      itemSize[0] + position[0] >= width ||
-      itemSize[1] + position[1] >= height
-    ) {
-      fits = false;
-    }
-
-    return fits;
+  import { flip } from "svelte/animate";
+  import { dndzone } from "svelte-dnd-action";
+  export let items: any[];
+  export let gridSize: number[];
+  const flipDurationMs = 300;
+  function handleDndConsider(e) {
+    items = e.detail.items;
   }
-
-  onMount(() => {
-    dragStatus.store.subscribe((currentDragStatus) => {
-      // first check if currently dragged item is within this grid's bounds
-      const bounds = gridDomElement.getBoundingClientRect();
-      // then check for gridfit
-      const gridX = Math.floor(
-        (currentDragStatus.itemX - bounds.left) / itemSize
-      );
-      const gridY = Math.floor(
-        (currentDragStatus.itemY - bounds.top) / itemSize
-      );
-      console.log(gridX, gridY);
-      const fits = checkItemFit(currentDragStatus.itemSize, [gridX, gridY]);
-      if (fits != currentDragStatus.fits) {
-        currentDragStatus.fits = fits;
-        dragStatus.store.set(currentDragStatus);
-      }
-    });
-  });
+  function handleDndFinalize(e) {
+    items = e.detail.items;
+  }
 </script>
 
-<grid
-  style={`grid-template-columns: repeat(${width}, ${itemSize}px);`}
-  bind:this={gridDomElement}
->
-  {#each { length: width } as i, x}
-    {#each { length: height } as j, y}
-      <square style={`width:${itemSize}px; height: ${itemSize}px;`} />
+<div>
+  <section
+    use:dndzone={{ items, flipDurationMs }}
+    on:consider={handleDndConsider}
+    on:finalize={handleDndFinalize}
+  >
+    {#each items as item (item.id)}
+      <item animate:flip={{ duration: flipDurationMs }}>
+        {item.name}
+      </item>
     {/each}
-  {/each}
-</grid>
+  </section>
+  <grid>
+    {#each { length: gridSize[0] } as i, x}
+      {#each { length: gridSize[1] } as i, y}
+        <square />
+      {/each}
+    {/each}
+  </grid>
+</div>
 
 <style>
+  section {
+    height: 600px;
+    border: 1px solid black;
+    display: grid;
+    grid-template-columns: repeat(6, 64px);
+    overflow-x: scroll;
+  }
+  item {
+    width: 64px;
+    height: 64px;
+  }
   grid {
     display: grid;
-    border: 1px solid #dededede;
+    grid-template-columns: repeat(6, 64px);
+    position: absolute;
   }
   square {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #dddddd;
-    border-bottom: 1px solid #dededede;
-    border-right: 1px solid #dededede;
+    width: 64px;
+    height: 64px;
+    border: black solid;
+    border-width: 0 1px 1px 0;
   }
 </style>
