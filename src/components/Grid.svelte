@@ -2,6 +2,7 @@
   import { flip } from "svelte/animate";
   import { dndzone } from "svelte-dnd-action";
   import { uuidv4 } from "../util";
+  import Item from "./Item.svelte";
 
   export let items: any[] = [];
 
@@ -10,6 +11,7 @@
     items.push({
       id: uuidv4(),
       name: Math.round(Math.random() * Math.random() * 1000),
+      position: [0, i],
     });
   }
 
@@ -34,9 +36,14 @@
     }, 64px);`}
   >
     {#each items as item (item.id)}
-      <item animate:flip={{ duration: flipDurationMs }}>
+      <item
+        style={`left: ${item.position[0] * 64}px; top: ${
+          item.position[1] * 64
+        }px`}
+      >
         {item.name}
       </item>
+      <!-- <Item {item} /> -->
     {/each}
   </section>
   <grid style={`grid-template-columns: repeat(${gridSize[0]}, 64px);`}>
@@ -54,11 +61,7 @@
     display: grid;
     position: absolute;
   }
-  item {
-    position: absolute;
-    width: 64px;
-    height: 64px;
-  }
+
   grid {
     height: 600px;
     display: grid;
@@ -71,5 +74,11 @@
     box-sizing: border-box;
     border: #c0c0c0 solid;
     border-width: 0 1px 1px 0;
+  }
+
+  item {
+    position: absolute;
+    width: 64px;
+    height: 64px;
   }
 </style>
