@@ -1,10 +1,22 @@
 <script lang="ts">
   import { flip } from "svelte/animate";
   import { dndzone } from "svelte-dnd-action";
-  export let items: any[];
+  import { uuidv4 } from "../util";
+
+  export let items: any[] = [];
+
+  // fillgrid
+  for (let i = 0; i < 5; i++) {
+    items.push({
+      id: uuidv4(),
+      name: Math.round(Math.random() * Math.random() * 1000),
+    });
+  }
+
   export let gridSize: number[];
   const flipDurationMs = 300;
   function handleDndConsider(e) {
+    console.log("consider?");
     items = e.detail.items;
   }
   function handleDndFinalize(e) {
@@ -17,6 +29,9 @@
     use:dndzone={{ items, flipDurationMs }}
     on:consider={handleDndConsider}
     on:finalize={handleDndFinalize}
+    style={`height: ${gridSize[1] * 64}px; grid-template-columns: repeat(${
+      gridSize[0]
+    }, 64px);`}
   >
     {#each items as item (item.id)}
       <item animate:flip={{ duration: flipDurationMs }}>
@@ -24,10 +39,10 @@
       </item>
     {/each}
   </section>
-  <grid>
+  <grid style={`grid-template-columns: repeat(${gridSize[0]}, 64px);`}>
     {#each { length: gridSize[0] } as i, x}
       {#each { length: gridSize[1] } as i, y}
-        <square />
+        <square>{x}:{y}</square>
       {/each}
     {/each}
   </grid>
@@ -35,25 +50,26 @@
 
 <style>
   section {
-    height: 600px;
-    border: 1px solid black;
+    border: 1px solid Yellow;
     display: grid;
-    grid-template-columns: repeat(6, 64px);
-    overflow-x: scroll;
+    position: absolute;
   }
   item {
+    position: absolute;
     width: 64px;
     height: 64px;
   }
   grid {
+    height: 600px;
     display: grid;
-    grid-template-columns: repeat(6, 64px);
-    position: absolute;
+    margin-right: 5rem;
   }
   square {
     width: 64px;
     height: 64px;
-    border: black solid;
+    color: #c0c0c0;
+    box-sizing: border-box;
+    border: #c0c0c0 solid;
     border-width: 0 1px 1px 0;
   }
 </style>
