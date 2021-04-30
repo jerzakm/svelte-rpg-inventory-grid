@@ -7,11 +7,12 @@
   export let gridSize: number[];
 
   // fillgrid
+
   for (let i = 0; i < 9; i++) {
     items.push({
       id: uuidv4(),
       name: Math.round(Math.random() * Math.random() * 1000),
-      position: [0, i],
+      position: [Math.round(Math.random() * (gridSize[0] - 1)), i],
       bgColor: `rgba(${Math.round(Math.random() * 150 + 104)},${Math.round(
         Math.random() * 200 + 54
       )},${Math.round(Math.random() * 200 + 54)},1.0)`,
@@ -33,7 +34,6 @@
         }
       }
     }
-    console.log(gridFill);
   }
 
   function handleDndConsider(e) {
