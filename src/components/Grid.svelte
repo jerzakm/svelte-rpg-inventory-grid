@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { dndzone } from "svelte-dnd-action";
-  import { uuidv4, make2dArray } from "../util";
-  import Item from "./Item.svelte";
+  import { dndzone } from 'svelte-dnd-action'
+  import { uuidv4, make2dArray } from '../util'
+  import Item from './Item.svelte'
 
-  export let items: any[] = [];
-  export let gridSize: number[];
+  export let items: any[] = []
+  export let gridSize: number[]
 
   // fillgrid
 
@@ -17,31 +17,31 @@
         Math.random() * 200 + 54
       )},${Math.round(Math.random() * 200 + 54)},1.0)`,
       itemSize: [1, 1],
-    });
+    })
   }
-  const flipDurationMs = 150;
+  const flipDurationMs = 150
 
-  let gridFill: any[][] = make2dArray(gridSize[0], gridSize[1], undefined);
+  let gridFill: any[][] = make2dArray(gridSize[0], gridSize[1], undefined)
 
-  calcGridFill();
+  calcGridFill()
 
   function calcGridFill() {
-    gridFill = make2dArray(gridSize[0], gridSize[1], undefined);
+    gridFill = make2dArray(gridSize[0], gridSize[1], undefined)
     for (const item of items) {
       for (let x = 0; x < item.itemSize[0]; x++) {
         for (let y = 0; y < item.itemSize[0]; y++) {
-          gridFill[x + item.position[0]][y + item.position[1]] = item;
+          gridFill[x + item.position[0]][y + item.position[1]] = item
         }
       }
     }
   }
 
   function handleDndConsider(e) {
-    console.log("consider?");
-    items = e.detail.items;
+    console.log('consider?')
+    items = e.detail.items
   }
   function handleDndFinalize(e) {
-    items = e.detail.items;
+    items = e.detail.items
   }
 </script>
 
@@ -63,8 +63,8 @@
       {#each { length: gridSize[0] } as i, x}
         <square
           style={gridFill[x][y]
-            ? "background-color:rgba(255,150,150);"
-            : "background-color:rgba(230,255,230);"}>{x}:{y}</square
+            ? 'background-color:rgba(255,150,150);'
+            : 'background-color:rgba(230,255,230);'}>{x}:{y}</square
         >
       {/each}
     {/each}

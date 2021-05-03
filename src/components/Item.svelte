@@ -1,17 +1,16 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  export let item;
+  export let item
 
-  let domElement;
+  let domElement
 
   function applyStyle(domElement: HTMLElement) {
     if (domElement) {
-      domElement.style.width = `${64}px`;
-      domElement.style.height = `${64}px`;
+      domElement.style.width = `${64}px`
+      domElement.style.height = `${64}px`
     }
   }
 
-  $: applyStyle(domElement);
+  $: applyStyle(domElement)
 </script>
 
 <item
