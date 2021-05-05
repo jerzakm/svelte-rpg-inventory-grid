@@ -1,29 +1,32 @@
 <script lang="ts">
+  import App from "../App.svelte";
+  import type { Inventory } from "../Inventory";
+
   import { make2dArray } from "../util";
   import Grid2Slot from "./Grid2Slot.svelte";
 
   export let gridSize: number[];
 
-  const flipDurationMs = 150;
+  export let inventory: Inventory;
 
   let gridFill: any[][] = make2dArray(gridSize[0], gridSize[1], undefined);
 </script>
 
 <div>
   <section
-    style={`height: ${gridSize[1] * 64}px; grid-template-columns: repeat(${
-      gridSize[0]
-    }, 64px);`}
+    style={`height: ${
+      inventory.gridSize.y * 64
+    }px; grid-template-columns: repeat(${inventory.gridSize.x}, 64px);`}
   />
-  <grid style={`grid-template-columns: repeat(${gridSize[0]}, 64px);`}>
-    {#each { length: gridSize[1] } as i, y}
-      {#each { length: gridSize[0] } as i, x}
+  <grid style={`grid-template-columns: repeat(${inventory.gridSize.x}, 64px);`}>
+    {#each { length: inventory.gridSize.y } as i, y}
+      {#each { length: inventory.gridSize.x } as i, x}
         <square
           style={gridFill[x][y]
             ? "background-color:rgba(255,150,150);"
             : "background-color:rgba(230,255,230);"}
         >
-          <Grid2Slot />
+          <Grid2Slot items={[inventory.gridSpace[x][y]]} />
         </square>
       {/each}
     {/each}
