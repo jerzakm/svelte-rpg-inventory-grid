@@ -4,10 +4,12 @@ export class Inventory {
   items: InventoryItem[];
   gridSpace: (InventoryItem | boolean)[][];
   gridSize: IPoint2;
+  id: string;
 
   constructor(gridSize: IPoint2, items: InventoryItem[] = []) {
     this.gridSize = gridSize;
     this.items = items;
+    this.id = uuidv4();
     this.calculateGridSpace();
   }
 
@@ -30,6 +32,7 @@ export class Inventory {
         id: uuidv4(),
         size: { x: 1, y: 1 },
         position: { x: i, y: i },
+        parent: this,
         details: {
           name: `${Math.round(Math.random() * 500)}`,
           color: `rgba(${Math.round(Math.random() * 150 + 104)},${Math.round(
@@ -41,6 +44,12 @@ export class Inventory {
 
     this.calculateGridSpace();
   }
+
+  public addItem(item: InventoryItem, position: IPoint2) {
+    item.parent = this;
+    this.items.push(item);
+    this.calculateGridSpace();
+  }
 }
 
 export interface InventoryItem {
@@ -48,4 +57,5 @@ export interface InventoryItem {
   position: IPoint2;
   size: IPoint2;
   details: { name: string; color: string };
+  parent: Inventory;
 }
